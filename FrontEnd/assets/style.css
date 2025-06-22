@@ -52,6 +52,7 @@ body {
 	margin:auto;
 	font-family: 'Work Sans' ;
 	font-size: 14px;
+	background-color:#FFFEF8
 }
 header {
 	display: flex;
@@ -60,6 +61,10 @@ header {
 }
 section {
 	margin: 50px 0
+}
+
+strong{
+	font-weight: bold;
 }
 
 h1{
@@ -88,16 +93,28 @@ nav ul {
 	display: flex;
 	align-items: center;
 	list-style-type: none;
-
+	gap: 44px;
 }
 nav li {
 	padding: 0 10px;
 	font-size: 1.2em;
 }
 
+.logoInsta{
+	width:22px;
+	height: 22px;
+}
+
+
 li:hover {
 	color: #B1663C;
 }
+ 
+a , a:link{
+	text-decoration: none;
+	color:inherit;
+}
+
 #introduction {
 	display: flex;
 	align-items: center;
@@ -139,7 +156,7 @@ li:hover {
 }
 #contact {
 	width: 50%;
-margin: auto;
+	margin: auto;
 }
 #contact > * {
 	text-align: center;
@@ -180,10 +197,18 @@ input[type="submit"]{
 	border-radius: 60px ;
 }
 
+footer{
+	background-color: #FFFFFF;
+	
+}
+
 footer nav ul {
 	display: flex;
 	justify-content: flex-end;
-	margin: 2em
+	margin: 2em; 
+	height: 60px;
+	font-weight: 300;
+	font-size: 14px;
 }
 
 button{
@@ -198,6 +223,11 @@ button{
 	border: 1px #1D6154 solid;
 	font-size: 16px;
 }
+
+/**.btn-choix.selected{
+	color:white;
+	background-color: #1D6154;
+}*/
 
 .menu-filtres{
 	display: flex;
@@ -224,4 +254,10 @@ button{
 
 .btn-Hotel-Restau{
 	width:198px;
+}
+
+
+
+#loginPage{
+	max-height: 1024px;
 }
