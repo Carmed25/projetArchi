@@ -1,20 +1,22 @@
+console.log("script chargé")
+
 const galerie = document.querySelector(".gallery");
  
 //fonction qui permet de voir si on recupère correctement les données
-
 async function attendreFetch() {
     const reponse = await fetch("http://localhost:5678/api/works");
-    if (!reponse.ok) {
+    if (!reponse.ok) 
         throw new Error(reponse.status);
-    }
-    return reponse.json()
+    const data = await reponse.json();
+    console.log ("données recues:", data);
+    //return reponse.json()
+    return data;
 }
 
 // afficher les travaux dans leur bon emplacement
 function afficherProjets(projets){
-    galerie.innerHTML= ""; //vide gallery
-
-        //for(let i=0 ; i<listeProjets.length; i++){
+    galerie.innerHTML= "";
+            //for(let i=0 ; i<listeProjets.length; i++){
             //let projet = listeProjets[i];});
     projets.forEach(projet => {
         const figure = document.createElement ("figure");
@@ -37,57 +39,65 @@ async function chargerProjets(listeProjets){
     try {
         const listeProjets = await attendreFetch()
         afficherProjets(listeProjets);
-        
     } catch (error) {
         console.log("Erreur chargement des projets :"+ error.message);
     }
 }
-
 chargerProjets();
 
-// pARTIE FILTRE A RETRAVAILLER --> Optimisation  
+
+// Partie Filtre 
     const reponse = await fetch("http://localhost:5678/api/works");
     const listeProjets = await reponse.json();
 
-  //TODO recuperation de toutes les categoriesId 
-  //TODO générer dynamiquement les boutons via javaS selon leur nom de categorie
-  // async function filter() {
+  // Recuperation de toutes les categoriesId
 
-  const btnTous= document.querySelector(".btn-Tous");
-  btnTous.addEventListener("click",function(){
-    const projetsFiltres= listeProjets.filter(function(listeProjets){
-        return listeProjets.categoryId > 0 ;
-   
+        //obtient tableau de nomcategorie/id de tous les projets
+    const projetsIdCAt = listeProjets.map(projet => [projet.categoryId , projet.category.name]);
+    console.log("tableau tous les projets id/cat:",projetsIdCAt);
+        // enleve doublons 
+    const IdCat = new Map(projetsIdCAt); 
+    console.log(IdCat);
+        // obtient liste des noms/Id associés des categories triées
+    const categoriesIdNom = Array.from(IdCat,([id, name]) => ({id ,name}));
+    console.log("liste des catégories triées avec id :",categoriesIdNom);
+
+
+  //générer dynamiquement les boutons via javaS selon leur nom de categorie
+    
+  const menuFiltre = document.querySelector(".menu-filtres");
+    const btnTous = document.createElement ("button");
+        btnTous.textContent= "Tous";
+        btnTous.dataset.cat =0;
+        btnTous.classList.add("btn-filter");
+        menuFiltre.appendChild(btnTous);
+
+    categoriesIdNom.forEach(categorie=>{
+    const btn = document.createElement("button");
+    btn.textContent=categorie.name;
+    btn.dataset.cat = categorie.id;
+    btn.classList.add("btn-filter");
+    menuFiltre.appendChild(btn);
+  });
+
+document.querySelectorAll("button").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+     const nbrcatId = Number(btn.dataset.cat);
+     const projetsFiltres= nbrcatId===0 ? listeProjets : listeProjets.filter(p=>p.categoryId===nbrcatId);
+    afficherProjets(projetsFiltres);
     });
-    console.log(projetsFiltres)
-    afficherProjets(projetsFiltres)
-  })
+   
+});
+
  
 
-const btnObjets=document.querySelector(".btn-Objets");
-btnObjets.addEventListener("click",function(){
-    const projetsFiltres= listeProjets.filter(function(listeProjets){
-        return listeProjets.categoryId === 1;
-    });
-    console.log(projetsFiltres)
-    afficherProjets(projetsFiltres)
-})
+//const btnHotelRestaurant=document.querySelector(".btn-Hotel-Restau");
+//btnHotelRestaurant.addEventListener("click",function(){
+  //  const projetsFiltres= listeProjets.filter(function(listeProjets){
+    //    return listeProjets.categoryId === 3;
+    //});
+    //console.log(projetsFiltres)
+    //afficherProjets(projetsFiltres)
 
-const btnAppartements=document.querySelector(".btn-Appart");
-btnAppartements.addEventListener("click",function(){
-    const projetsFiltres= listeProjets.filter(function(listeProjets){
-        return listeProjets.categoryId === 2;
-    });
-    console.log(projetsFiltres)
-    afficherProjets(projetsFiltres)
-})
+//})
 
-const btnHotelRestaurant=document.querySelector(".btn-Hotel-Restau");
-btnHotelRestaurant.addEventListener("click",function(){
-    const projetsFiltres= listeProjets.filter(function(listeProjets){
-        return listeProjets.categoryId === 3;
-    });
-    console.log(projetsFiltres)
-    afficherProjets(projetsFiltres)
-
-})
