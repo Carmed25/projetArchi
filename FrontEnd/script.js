@@ -47,44 +47,50 @@ chargerProjets();
 
 
 // Partie Filtre 
-    const reponse = await fetch("http://localhost:5678/api/works");
-    const listeProjets = await reponse.json();
 
-  // Recuperation de toutes les categoriesId
+const listeProjets = await attendreFetch();
+  
+    // Recuperation de toutes les categoriesId
 
         //obtient tableau de nomcategorie/id de tous les projets
-    const projetsIdCAt = listeProjets.map(projet => [projet.categoryId , projet.category.name]);
+const projetsIdCAt = listeProjets.map(projet => [projet.categoryId , projet.category.name]);
     console.log("tableau tous les projets id/cat:",projetsIdCAt);
         // enleve doublons 
-    const IdCat = new Map(projetsIdCAt); 
+const IdCat = new Map(projetsIdCAt); 
     console.log(IdCat);
         // obtient liste des noms/Id associés des categories triées
-    const categoriesIdNom = Array.from(IdCat,([id, name]) => ({id ,name}));
+const categoriesIdNom = Array.from(IdCat,([id, name]) => ({id ,name}));
     console.log("liste des catégories triées avec id :",categoriesIdNom);
 
 
-  //générer dynamiquement les boutons via javaS selon leur nom de categorie
+    //générer dynamiquement les boutons via javaS selon leur nom de categorie
     
-  const menuFiltre = document.querySelector(".menu-filtres");
-    const btnTous = document.createElement ("button");
-        btnTous.textContent= "Tous";
-        btnTous.dataset.cat =0;
-        btnTous.classList.add("btn-filter");
-        menuFiltre.appendChild(btnTous);
+const menuFiltre = document.querySelector(".menu-filtres");
+const btnTous = document.createElement ("button");
+    btnTous.textContent= "Tous";
+    btnTous.dataset.cat =0;
+    btnTous.classList.add("btn-filter");
+    menuFiltre.appendChild(btnTous);
 
-    categoriesIdNom.forEach(categorie=>{
+categoriesIdNom.forEach(categorie=>{
     const btn = document.createElement("button");
-    btn.textContent=categorie.name;
-    btn.dataset.cat = categorie.id;
-    btn.classList.add("btn-filter");
-    menuFiltre.appendChild(btn);
-  });
+        btn.textContent=categorie.name;
+        btn.dataset.cat = categorie.id;
+        btn.classList.add("btn-filter");
+        menuFiltre.appendChild(btn);
+});
 
-document.querySelectorAll("button").forEach(btn=>{
+document.querySelectorAll(".btn-filter").forEach(btn=>{
     btn.addEventListener("click",()=>{
-     const nbrcatId = Number(btn.dataset.cat);
-     const projetsFiltres= nbrcatId===0 ? listeProjets : listeProjets.filter(p=>p.categoryId===nbrcatId);
-    afficherProjets(projetsFiltres);
+        const nbrcatId = Number(btn.dataset.cat);
+        const projetsFiltres= nbrcatId===0 
+            ? listeProjets 
+            : listeProjets.filter(p=>p.categoryId===nbrcatId);
+        afficherProjets(projetsFiltres);
+
+        document.querySelectorAll(".btn-filter")
+        .forEach (btn=>btn.classList.remove ("active"));
+        btn.classList.add("active");
     });
    
 });

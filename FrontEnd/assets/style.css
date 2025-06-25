@@ -47,8 +47,11 @@ table {
 	border-spacing: 0;
 }
 /** end reset css**/
+/**html{
+	background-color: white;
+}*/
 body {
-	max-width: 1140px;
+	/**max-width: 1140px;*/
 	margin:auto;
 	font-family: 'Work Sans' ;
 	font-size: 14px;
@@ -89,6 +92,15 @@ h2{
 	font-size: 30px;
 	color: #1D6154
 }
+
+h3{
+	font-family: 'Work Sans';
+	font-weight: 500;
+	font-size: 14px;
+	color: #3d3d3d;
+	text-align: center;
+}
+
 nav ul {
 	display: flex;
 	align-items: center;
@@ -199,7 +211,7 @@ input[type="submit"]{
 
 footer{
 	background-color: #FFFFFF;
-	
+	margin-top: 50px;
 }
 
 footer nav ul {
@@ -212,22 +224,27 @@ footer nav ul {
 }
 
 button{
-	font-family: 'Syne';
-	font-weight: 700;
-	color: #1D6154;
-	background-color: white;
+	
 	width: auto;
 	text-align: center;
 	border-radius: 60px ;
 	height: 37px;
-	border: 1px #1D6154 solid;
-	font-size: 16px;
+	min-width: 100px;
 }
 
-/**.btn-choix.selected{
+.btn-filter{
+	border: 1px #1D6154 solid;
+	font-size: 16px;
+	font-family: 'Syne';
+	font-weight: 700;
+	color: #1D6154;
+	background-color: white;
+}
+
+.btn-filter.active{
 	color:white;
 	background-color: #1D6154;
-}*/
+}
 
 .menu-filtres{
 	display: flex;
@@ -240,24 +257,9 @@ button{
 	
 }
 
-.btn-Tous{
-	width:100px;
-}
-
-.btn-Objets{
-	width:100px;
-}
-
-.btn-Appart{
-	width:157px;
-}
-
-.btn-Hotel-Restau{
-	width:198px;
-}
-
-
-
 #loginPage{
 	max-height: 1024px;
+}
+#loginPage a{
+	text-decoration: underline;
 }
