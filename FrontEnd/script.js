@@ -1,7 +1,9 @@
 console.log("script chargé")
 
 const galerie = document.querySelector(".gallery");
- 
+
+
+
 //fonction qui permet de voir si on recupère correctement les données
 async function attendreFetch() {
     const reponse = await fetch("http://localhost:5678/api/works");
@@ -87,23 +89,12 @@ document.querySelectorAll(".btn-filter").forEach(btn=>{
             ? listeProjets 
             : listeProjets.filter(p=>p.categoryId===nbrcatId);
         afficherProjets(projetsFiltres);
-
+        //ajout couleur au bouton selectionne
         document.querySelectorAll(".btn-filter")
-        .forEach (btn=>btn.classList.remove ("active"));
+            .forEach (btn=>btn.classList.remove ("active"));
         btn.classList.add("active");
     });
    
 });
 
  
-
-//const btnHotelRestaurant=document.querySelector(".btn-Hotel-Restau");
-//btnHotelRestaurant.addEventListener("click",function(){
-  //  const projetsFiltres= listeProjets.filter(function(listeProjets){
-    //    return listeProjets.categoryId === 3;
-    //});
-    //console.log(projetsFiltres)
-    //afficherProjets(projetsFiltres)
-
-//})
-

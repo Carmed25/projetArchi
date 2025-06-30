@@ -9,15 +9,25 @@
 	<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap" rel="stylesheet">
 	<meta name="description" content="">
 	<link rel="stylesheet" href="./assets/style.css">
+	<script src="https://kit.fontawesome.com/13fa0a6e06.js" crossorigin="anonymous" defer></script>
+	<script type="module" src="script.js" defer></script>
+	<script type="module" src="modale.js" defer></script>
 </head>
 <body>
+	<div class="hide" id="topBar">
+		<div class="logoConnexion">
+			<i class="fa-regular fa-pen-to-square"></i>
+			<span>Mode édition</span>
+		</div>
+	</div>
 <header>
 	<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
 	<nav>
 		<ul>
 			<li>projets</li>
 			<li>contact</li>
-			<li><a href="login.html">login</a></li>
+			<li id="login" ><a href="login.html">login</a></li>
+			<li id="logout" class="hide"><a href="#" alt="déconnexion">logout</a></li>
 			<li><img src="./assets/icons/instagram.png" alt="Instagram" class="logoInsta"></li>
 		</ul>
 	</nav>
@@ -35,7 +45,13 @@
 		</article>
 	</section>
 	<section id="portfolio">
-		<h2>Mes Projets</h2>
+		<div class="titre-projets">
+			<h2>Mes Projets</h2>
+			<div class="connexion-modale hide">
+				<i class="fa-regular fa-pen-to-square"></i>
+				<a href="#" alt="afficher modale" class="open-modale">Modifier</a>
+		</div>
+		</div>
 		<!--création des filtres de recherche-->
 		<div class="menu-filtres">	
 			<!--<button>
@@ -72,6 +88,6 @@
 		</ul>
 	</nav>
 </footer>
-<script type="module" src="script.js"></script>
+
 </body>
 </html>
