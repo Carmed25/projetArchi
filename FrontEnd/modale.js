@@ -11,6 +11,7 @@ console.log('DOMContentLoaded', { topBar, loginBtn, logoutBtn, token });
     
 
     function connexion(){
+        // verifie si token est stocké et le converti en booleen
         const isLoggedIn = !!localStorage.getItem('authToken');
     console.log('connexion()', { isLoggedIn });
         if (isLoggedIn){
