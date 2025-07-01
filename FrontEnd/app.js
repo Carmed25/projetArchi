@@ -42,3 +42,9 @@ const stopPropagation = function(e){
 document.querySelectorAll(".js-modal").forEach(a=>{
     a.addEventListener("click",openModal)
 })
+window.addEventListener("keydown",function(e){
+    console.log(e.key) //pour voir nom de la touche
+    if(e.key ==="Escape"|| e.key ==="Esc"){
+        closeModal(e)
+    }
+})
