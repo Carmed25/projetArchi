@@ -1,3 +1,6 @@
+//import { attendreFetch } from "./data.js";
+//let listeProjets=[]
+//console.log ("je recupere ma liste projet",listeProjets )
 console.log("script chargé")
 
 const galerie = document.querySelector(".gallery");
@@ -8,12 +11,27 @@ const galerie = document.querySelector(".gallery");
 async function attendreFetch() {
     const reponse = await fetch("http://localhost:5678/api/works");
     if (!reponse.ok) 
-        throw new Error(reponse.status);
+       throw new Error(reponse.status);
     const data = await reponse.json();
     console.log ("données recues:", data);
-    //return reponse.json()
+    ///return reponse.json()
     return data;
 }
+//const listeProjets=await attendreFetch()
+//console.log ("test des donnees pour transfer",listeProjets)
+
+document.addEventListener("DOMContentLoaded", async()=>{
+try {
+        const listeProjets = await attendreFetch()
+        afficherProjets(listeProjets);
+        genererFiltres(listeProjets)
+    } catch (error) {
+        console.log("Erreur chargement des projets :"+ error.message);
+    }
+})
+
+
+
 
 // afficher les travaux dans leur bon emplacement
 function afficherProjets(projets){
@@ -36,65 +54,75 @@ function afficherProjets(projets){
     })
 }
 
-//fonction qui récupère et affiche les travaux
-async function chargerProjets(listeProjets){
-    try {
-        const listeProjets = await attendreFetch()
-        afficherProjets(listeProjets);
-    } catch (error) {
-        console.log("Erreur chargement des projets :"+ error.message);
-    }
-}
-chargerProjets();
+//fonction qui récupère et affiche les travaux filtrés
+//async function chargerProjets(){
+
+
+
+
+//async function chargerProjets(){
+    //try {
+      //  const listeProjets = await attendreFetch()
+        //afficherProjets(listeProjets);
+        //genererFiltres(listeProjets)
+    //} catch (error) {
+      //  console.log("Erreur chargement des projets :"+ error.message);
+    ///}
+//}
+///chargerProjets();
+//document.addEventListener("DOMContentLoaded",chargerProjets);
+//fonction qui permet de voir si on recupère correctement les données
 
 
 // Partie Filtre 
 
-const listeProjets = await attendreFetch();
+//const listeProjets = await attendreFetch();
   
-    // Recuperation de toutes les categoriesId
-
+    // fonction de recupération de toutes les categoriesId
+async function genererFiltres(listeProjets) {
+    
         //obtient tableau de nomcategorie/id de tous les projets
-const projetsIdCAt = listeProjets.map(projet => [projet.categoryId , projet.category.name]);
+    const projetsIdCAt = listeProjets.map(projet => [projet.categoryId , projet.category.name]);
     console.log("tableau tous les projets id/cat:",projetsIdCAt);
         // enleve doublons 
-const IdCat = new Map(projetsIdCAt); 
+    const IdCat = new Map(projetsIdCAt); 
     console.log(IdCat);
         // obtient liste des noms/Id associés des categories triées
-const categoriesIdNom = Array.from(IdCat,([id, name]) => ({id ,name}));
+    const categoriesIdNom = Array.from(IdCat,([id, name]) => ({id ,name}));
     console.log("liste des catégories triées avec id :",categoriesIdNom);
 
 
     //générer dynamiquement les boutons via javaS selon leur nom de categorie
-    
-const menuFiltre = document.querySelector(".menu-filtres");
-const btnTous = document.createElement ("button");
+    //creation des boutons
+    const menuFiltre = document.querySelector(".menu-filtres");
+    menuFiltre.innerHTML="";
+    //bouton TOUS
+    const btnTous = document.createElement ("button");
     btnTous.textContent= "Tous";
     btnTous.dataset.cat =0;
     btnTous.classList.add("btn-filter");
     menuFiltre.appendChild(btnTous);
-
-categoriesIdNom.forEach(categorie=>{
-    const btn = document.createElement("button");
-        btn.textContent=categorie.name;
-        btn.dataset.cat = categorie.id;
-        btn.classList.add("btn-filter");
-        menuFiltre.appendChild(btn);
-});
-
-document.querySelectorAll(".btn-filter").forEach(btn=>{
-    btn.addEventListener("click",()=>{
-        const nbrcatId = Number(btn.dataset.cat);
-        const projetsFiltres= nbrcatId===0 
-            ? listeProjets 
-            : listeProjets.filter(p=>p.categoryId===nbrcatId);
-        afficherProjets(projetsFiltres);
-        //ajout couleur au bouton selectionne
-        document.querySelectorAll(".btn-filter")
-            .forEach (btn=>btn.classList.remove ("active"));
-        btn.classList.add("active");
+    //autres Boutons
+    categoriesIdNom.forEach(categorie=>{
+        const btn = document.createElement("button");
+            btn.textContent=categorie.name;
+            btn.dataset.cat = categorie.id;
+            btn.classList.add("btn-filter");
+            menuFiltre.appendChild(btn);
     });
-   
-});
-
+    //tri des travaux selon leur id
+    menuFiltre.querySelectorAll(".btn-filter").forEach(btn=>{
+        btn.addEventListener("click",()=>{
+            const nbrcatId = Number(btn.dataset.cat);
+            const projetsFiltres= nbrcatId===0 
+                ? listeProjets 
+                : listeProjets.filter(p=>p.categoryId===nbrcatId);
+            afficherProjets(projetsFiltres);
+        //ajout couleur au bouton selectionne
+            menuFiltre.querySelectorAll(".btn-filter")
+                .forEach (btn=>btn.classList.remove ("active"));
+            btn.classList.add("active");
+        });
+    });
+}
  

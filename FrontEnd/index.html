@@ -10,8 +10,11 @@
 	<meta name="description" content="">
 	<link rel="stylesheet" href="./assets/style.css">
 	<script src="https://kit.fontawesome.com/13fa0a6e06.js" crossorigin="anonymous" defer></script>
+	
 	<script type="module" src="script.js" defer></script>
+	<!--<script type="module" src="data.js" defer></script>-->
 	<script type="module" src="modale.js" defer></script>
+	<script type="module" src="app.js" defer></script>
 </head>
 <body>
 	<div class="hide" id="topBar">
@@ -49,7 +52,22 @@
 			<h2>Mes Projets</h2>
 			<div class="connexion-modale hide">
 				<i class="fa-regular fa-pen-to-square"></i>
-				<a href="#" alt="afficher modale" class="open-modale">Modifier</a>
+				<a href="#modal1" alt="afficher modale" class="js-modal">Modifier</a>
+
+
+				<!--MODALE-->
+
+				 <aside id="modal1" class="modal" aria-labelledby="titleModal" role="dialog" aria-modal="false" aria-hidden="true" style="display: none;"><!--fond noir-->
+       				<div class="fenetre-modal js-stopModal"><!--fenetre blanche-->
+            			<div class="js-closeModal"><i class="fa-solid fa-xmark"></i>
+						</div> <!-- mettre du texte fermer modale et voir pour bouton-->
+            			<h2 class="titleModal">Galerie de photo</h2>
+            			<div class="galerie-modal"></div>
+            			<hr class="ligneGrise"/>
+            			<button class="btnModal">Ajouter une photo</button>
+        			</div>
+   				 </aside>
+
 			</div>
 		</div>
 		<!--création des filtres de recherche-->
