@@ -89,12 +89,23 @@ function afficherProjetsModal(listeProjetsModal){
 
     listeProjetsModal.forEach(projet=>{
        const figure = document.createElement ("figure");
-        const img = document.createElement ("img");
+       figure.classList.add("modal-projet");
 
+        const img = document.createElement ("img");
         img.src = projet.imageUrl;
         img.title = projet.title;
+        
+        const btnTrash=document.createElement("button");
+        btnTrash.type="button";
+        btnTrash.classList.add("btn-trash");
+        btnTrash.innerHTML='<i class="fa-solid fa-trash-can"></i>';
+
+       // btnTrash.addEventListener("click",()=>{
+       //     supprimerProjet(projet.id,figure);
+       // });
           
         figure.appendChild(img);
+        figure.appendChild(btnTrash);
         galerieModale.appendChild(figure);
         
     });

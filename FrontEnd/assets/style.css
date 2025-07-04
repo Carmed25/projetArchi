@@ -356,13 +356,31 @@ button{
 	width: 100%;
 }
 
-/**.gallery {
-	width: 100%;
-	display: grid;
-	grid-template-columns: 1fr 1fr 1fr;
-	grid-column-gap: 20px;
-	grid-row-gap: 20px;
-}*/
+.modal-projet{
+	position: relative;
+}
+
+.btn-trash{
+	position: absolute;
+	top: 0.5em;
+	right: 0.5em;
+	background-color:black;
+	border:none;
+	min-width: 17px;
+	min-height: 17px;
+	max-height: 17px;
+	border-radius: 2px;
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
+
+}
+.btn-trash i{
+	color:white;
+	font-size: 0.8em;
+	line-height: 1;
+}
+
 
 .btnModal{
 	font-family: 'Syne';
