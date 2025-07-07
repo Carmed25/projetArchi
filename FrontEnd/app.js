@@ -28,10 +28,21 @@ const openModal=async function(e){
 
     // charger et afficher les projets
     await chargerModal();
-   };
+};
 
-const closeModal=function(e){
-    if (modal===null) return //si modal n'existe pas 
+document.querySelectorAll(".js-modal").forEach(a=>{
+    a.addEventListener("click",openModal)
+});
+
+window.addEventListener("keydown",function(e){
+    console.log(e.key) //pour voir nom de la touche
+    if(e.key ==="Escape"|| e.key ==="Esc"){
+        closeModal(e)
+    }
+});
+
+function closeModal (e){
+    if (modal===null) return //si modal n'existe pas ou(!modal)
     e.preventDefault()
     modal.style.display ="none";
     modal.setAttribute("aria-hidden", "true")
@@ -46,31 +57,21 @@ const closeModal=function(e){
 const stopPropagation = function(e){
     e.stopPropagation()
 };
-// ciblage de tous les elements liens qui ouvre la modale avec la class js-modal
-document.querySelectorAll(".js-modal").forEach(a=>{
-    a.addEventListener("click",openModal)
-});
 
-window.addEventListener("keydown",function(e){
-    console.log(e.key) //pour voir nom de la touche
-    if(e.key ==="Escape"|| e.key ==="Esc"){
-        closeModal(e)
-    }
-});
 
 
 
 async function chargerModal() {
     try{
-        const listeProjets=await attendreFetch();
-        afficherProjetsModal(listeProjets);
-        //remplirCatModal(listeProjets);
-
+        const liste=await attendreFetch();
+        afficherProjetsModal(liste);
+        changerVersionModale(liste);
+       
+        //remplirCatModal(liste);
     }catch(error){
         console.error("erreur modale fetch",error);
-    }
-    
-}
+    }  
+} 
 
 
 
@@ -116,108 +117,72 @@ function afficherProjetsModal(listeProjetsModal){
 
 }
 
-// Version page 2 de la modale avec partie upload photo
-const modalversion=document.getElementById("modal1");
-const btnAjouterPhoto=modalversion.querySelector(".btnModal");
-const btnValider=modalversion.querySelector(".btn-valider");
-const btnRetour=modalversion.querySelector(".btn-retour");
-const titleModalV = modalversion.querySelector(".titleModal");
-const sectionGalerie=document.getElementById("section-galerie");
-const sectionAjout=document.getElementById("section-ajout");
+// Version page1/page 2 de la modale avec partie upload photo
+function changerVersionModale(liste){
+    const modalVersion=modal;
+    const btnModal=modalVersion.querySelector(".btnModal");
+    const titleModalV = modalVersion.querySelector(".titleModal");
+    const sectionGalerie=document.getElementById("section-galerie");
+    const sectionAjout=document.getElementById("section-ajout");
+    const btnRetour=modalVersion.querySelector(".btn-retour");
+    const btnValider=modalVersion.querySelector(".btn-valider");
 
-btnAjouterPhoto.addEventListener("click",()=>{
-    titleModalV.textContent="Ajouter une photo";
-    sectionAjout.style.display="block";
-    sectionGalerie.style.display="none";
-    afficherCatModal()
-    remplirCatModal()
+    btnModal.addEventListener("click",()=>{
+        titleModalV.textContent="Ajouter une photo";
+        sectionAjout.style.display="block";
+        sectionGalerie.style.display="none";
+        prepareAJoutForm(liste);
+            //afficherCatModal()
+            //remplirCatModal()
 
 });
-btnRetour.addEventListener("click", ()=>{
-    titleModalV.textContent="Galerie de photo";
-    sectionAjout.style.display="none";
-    sectionGalerie.style.display="block";
-});
 
-btnValider.addEventListener("click",()=>{
+    btnRetour.addEventListener("click", ()=>{
+        titleModalV.textContent="Galerie de photo";
+        sectionAjout.style.display="none";
+        sectionGalerie.style.display="block";
+    });
+
+
+    btnValider.addEventListener("click",()=>{
     //traitement des données et formulaire
-    titleModalV.textContent="Galerie de photo";
-    sectionAjout.style.display="none";
-    sectionGalerie.style.display="block";
+         titleModalV.textContent="Galerie de photo";
+        sectionAjout.style.display="none";
+        sectionGalerie.style.display="block";
 
-});
+    });
+}
 
-
-const formAjout=document.getElementById("form-ajout");
-const chargerFichier=document.getElementById("charger-fichier");
-const previsuContainer=document.getElementById("previsu_container");
-const previsuImg=document.getElementById("previsu-img");
-const titrePhoto=document.getElementById("titre-photo");
-const categoriePhoto=document.getElementById("categorie-photo");
-const errorMsgChargement=document.getElementById("error-message");
-
-
-//prévisualisation de l'image sur sélection
-chargerFichier.addEventListener("change",()=>{
-   const fichier=chargerFichier.files[0];
-    if(fichier){
-        const url=URL.createObjectURL(fichier);
-        previsuImg.src= url;
-        previsuContainer.style.display="block";
-    }else{
-        //si annulation de la selection de photos
-        previsuContainer.style.display="none";
-        previsuImg.src="";
-    }
-});
+function prepareAJoutForm(liste){
+    
+    const chargerFichier=document.getElementById("charger-fichier");
+    const previsuContainer=document.getElementById("previsu_container");
+    const previsuImg=document.getElementById("previsu-img");
+    const titrePhoto=document.getElementById("titre-photo");
+    const categoriePhoto=document.getElementById("categorie-photo");
+    const formAjout=document.getElementById("form-ajout");
+    const errorMsgChargement=document.getElementById("error-message");
+    
 
 
-
-
-//validation et envoi du formulaire
-formAjout.addEventListener('submit', async function(event){
-    event.preventDefault();
-    errorMsgChargement.style.display="none";
-
-    if (!formAjout.checkValidity()){
-        formAjout.reportValidity();
-        return;
-    }
-
-    const token=localStorage.getItem("token");
-    if (!token){
-        errorMsgChargement.textContent="Vous devez être connecté.";
-        errorMsgChargement.style.display="block";
-        return;
-    }
-    const formulaireRempli=new FormData(formAjout);
-
-    try{
-        const requete= await fetch('http://localhost:5678/api/works',{
-            method:"POST",
-            headers: { Authorization: `Bearer ${token}`},
-            body: formulaireRempli
-        });
-        const dataF=await requete.json();
-        console.log( "reponse de API:", dataF);
-        if (!requete.ok){
-            throw new Error(dataF.message || requete.status);
-            
-        await chargerModal();
-        closeModal()
+    //prévisualisation de l'image sur sélection
+    chargerFichier.addEventListener("change",()=>{
+    const fichier=chargerFichier.files[0];
+        if(fichier){
+            const url=URL.createObjectURL(fichier);
+            previsuImg.src= url;
+            previsuContainer.style.display="block";
+        }else{
+            //si annulation de la selection de photos
+            previsuContainer.style.display="none";
+            previsuImg.src="";
         }
-    }catch(err){
-    console.error("Echec envoir requete:", err);
-    errorMsgChargement.textContent = err.message || "erreur serveur";
-    errorMsgChargement.style.display="block";
-  }
-});
+    });
 
 
+    //Recuperation dynamique des catégories
 
-//Recuperation dynamique des catégories
-function afficherCatModal(listeProjets){
-      const projetsIdCAt = listeProjets.map(projet => [projet.categoryId , projet.category.name]);
+    const projetsIdCAt = liste.map(projet => [projet.categoryId , projet.category.name]);
     console.log("tableau tous les projets id/cat:",projetsIdCAt);
         // enleve doublons 
     const IdCat = new Map(projetsIdCAt); 
@@ -225,20 +190,76 @@ function afficherCatModal(listeProjets){
         // obtient liste des noms/Id associés des categories triées
     const categoriesIdNom = Array.from(IdCat,([id, name]) => ({id ,name}));
     console.log("liste des catégories triées avec id :",categoriesIdNom);
-}
 
-// Remplissage dynamique des categories
 
-function remplirCatModal(listeProjets){
-    const categoriePhoto=document.getElementById("categorie-photo");
+    // Remplissage dynamique des categories
+
     categoriePhoto.innerHTML=`<option value=""></option>`;
-    
-    const cats= afficherCatModal(listeProjets);
 
-    cats.forEach(c=>{
+    categoriesIdNom.forEach(c=>{
         const option=document.createElement("option");
         option.value=c.id;
         option.textContent=c.name;
         categoriePhoto.appendChild(option);
     });
+
+   
+
+    //validation et envoi du formulaire
+    
+    formAjout.addEventListener('submit', async function(event){
+        event.preventDefault();
+        errorMsgChargement.style.display="none";
+
+        if (!formAjout.checkValidity()){
+            formAjout.reportValidity();
+            return;
+        }
+
+        const token=localStorage.getItem("authToken");
+        console.log("token present=",token);
+        if (!token){
+            errorMsgChargement.textContent="Vous devez être connecté.";
+            errorMsgChargement.style.display="block";
+            return;
+
+        }
+        const formulaireRempli=new FormData(formAjout);
+
+        try{
+            const requete= await fetch('http://localhost:5678/api/works',{
+                method:"POST",
+                headers: { Authorization: `Bearer ${token}`},
+                body: formulaireRempli
+            });
+            const dataF=await requete.json();
+            console.log( "reponse de API:", dataF);
+            if (!requete.ok){
+                throw new Error(dataF.message || requete.status);
+            }
+            const galerie = document.querySelector(".galerie-modal");
+            const fig = document.createElement("figure");
+            fig.classList.add(".modal-projet");
+            const img=document.createElement("img");
+            img.src=dataF.imageUrl;
+            img.alt=dataF.title;
+
+            const btnTrash=document.createElement("button");
+            btnTrash.type="button";
+            btnTrash.classList.add("btn-trash");
+            btnTrash.innerHTML=`<i class="fa-solid fa-trash-can"></i>`;
+          
+            fig.appendChild(img);
+            fig.appendChild(btnTrash);
+            galerie.appendChild(fig);
+
+
+         
+    }catch(err){
+    console.error("Echec envoi requete:", err);
+    errorMsgChargement.textContent = err.message || "erreur serveur";
+    errorMsgChargement.style.display="block";
+  }
+});
+
 }
