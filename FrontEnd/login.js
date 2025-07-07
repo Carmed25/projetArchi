@@ -1,3 +1,5 @@
+// connexion avec identifiant et mot de passe - recup du token
+
 const formulaireLogin =document.getElementById("login-form");
 const emailC=document.getElementById("email");
 const passwordC =document.getElementById("password");

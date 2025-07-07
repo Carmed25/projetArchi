@@ -72,14 +72,53 @@
             			<div class="js-closeModal"><i class="fa-solid fa-xmark"></i>
 						</div> <!-- mettre du texte fermer modale et voir pour bouton-->
             			<h2 class="titleModal">Galerie de photo</h2>
-            			<div class="galerie-modal"></div>
-            			<hr class="ligneGrise"/>
-            			<button class="btnModal">Ajouter une photo</button>
-        			</div>
+							<!-- **SECTION GALERIE PHOTO MODALE**-->
+						<div id="section-galerie">
+							<div class="galerie-modal"></div>
+							<!-- galerie de photos miniatures avec poubelle qui s'affichent-->
+            				<hr class="ligneGrise"/>
+            				<button class="btnModal">Ajouter une photo</button>
+						</div>
+							<!--SECTION AJOUT PHOTO MODALE-->
+						<div id="section-ajout" style="display:none">
+							<div class="btn-retour"><i class="fa-solid fa-arrow-left"></i></div>
+							
+							<form id="form-ajout">
+								<!--champ image - chargement des images-->
+								<div class="form-group">
+									<div class="charger-photo" id="charger-photo">
+										<i class="fa-solid fa-image"></i>
+										<button type="button" id="btn-charger"><input type="file" id="charger-fichier" name="image" accept="image/jpeg,image/png" required>+ Ajouter photo</button>
+										<p>jpeg,png : 4mo max</p>
+										 <!--<input type="file" id="charger-fichier" name="image" accept="image/jpeg,image/png" required>-->
+									</div>
+								</div>
+								<!--zon de prévisualisation ( massuée , sera visible quand image présente)-->
+								<div id="previsu_container" style="display: none;">
+									<img id="previsu-img" alt="prévisualisation" style="max-width: 100%; height: 100px; object-fit: contain;">
+								</div>
+								<!--champ titre -->
+								<div class="form-group">
+									<label for="titre-photo">Titre</label><br>
+									<input type="text" id="titre-photo" name="title" required>
+								</div>
+								<!--champ catégories-->
+								<div class="form-group">
+									<label for="categorie-photo">Catégories</label><br>
+									<select id="categorie-photo" name="categoryId" required>
+										<option value=""></option>
+									</select>
+								</div>
+								<div id="error-message" style="display: none;color: red;"></div>
+								<button type="submit" class="btn-valider">Valider </button>
+							</form>
+							<hr class="ligneGrise"/>
+							<!--<button class="btn-valider">Valider </button>-->
+        				</div>
    				 </aside>
 
 
-
+111
 				 
 			</div>
 		</div>
