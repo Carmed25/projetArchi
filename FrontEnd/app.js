@@ -64,8 +64,8 @@ const stopPropagation = function(e){
 async function chargerModal() {
     try{
         const liste=await attendreFetch();
-        afficherProjetsModal(liste);
-        changerVersionModale(liste);
+        afficherProjetsModal(liste); // affichage des miniatures avec btn-trash et DELETE si clic
+        changerVersionModale(liste); // affichage boite previsu et fonction prepareForm pour envoi formulaire
        
         //remplirCatModal(liste);
     }catch(error){
@@ -74,18 +74,6 @@ async function chargerModal() {
 } 
 
 
-
-
-
-//document.addEventListener("DOMContentLoaded", async()=>{
-//try {
-  //      const listeProjetsModal = await attendreFetch()
-    //    afficherProjetsModal(listeProjetsModal);
-      //  //genererFiltres(listeProjets)
-    //} catch (error) {
-      //  console.log("Erreur chargement des projets :"+ error.message);
-    //}
-//})
 
 //affichage des photos miniatures
 function afficherProjetsModal(listeProjetsModal){
@@ -104,18 +92,35 @@ function afficherProjetsModal(listeProjetsModal){
         btnTrash.type="button";
         btnTrash.classList.add("btn-trash");
         btnTrash.innerHTML='<i class="fa-solid fa-trash-can"></i>';
-
-       // btnTrash.addEventListener("click",()=>{
-       //     supprimerProjet(projet.id,figure);
-       // });
-          
+      
         figure.appendChild(img);
         figure.appendChild(btnTrash);
         galerieModale.appendChild(figure);
+
+        btnTrash.addEventListener("click",async e=>{
+            e.stopPropagation();
+          //supprimerProjet(projet.id,figure);
+          const id=figure.dataset.id;
+          const token=localStorage.getItem("authToken");
+
+          try{
+            const reponse=await fetch(`http://localhost:5678/api/works/${id}`,{
+                method:"DELETE",
+                headers:{Authorization:`Bearer ${token}`}
+            }
+          );
+          console.log("status suppression:", reponse.status);
+          if (!reponse.ok) throw new Error('Erreur ${reponse.status}');
+
+          figure.remove(); //TODO enlever egalement image de page d'accueil
+          suppImgAccueil(id);
+       }catch (err){
+            console.error("echec de la suppression:",err);
+       };
         
     });
 
-}
+})}
 
 // Version page1/page 2 de la modale avec partie upload photo
 function changerVersionModale(liste){
@@ -131,6 +136,7 @@ function changerVersionModale(liste){
         titleModalV.textContent="Ajouter une photo";
         sectionAjout.style.display="block";
         sectionGalerie.style.display="none";
+        btnRetour.style.display="block";
         prepareAJoutForm(liste);
             //afficherCatModal()
             //remplirCatModal()
@@ -141,12 +147,13 @@ function changerVersionModale(liste){
         titleModalV.textContent="Galerie de photo";
         sectionAjout.style.display="none";
         sectionGalerie.style.display="block";
+        btnRetour.style.display="none";
     });
 
 
     btnValider.addEventListener("click",()=>{
     //traitement des données et formulaire
-         titleModalV.textContent="Galerie de photo";
+        titleModalV.textContent="Galerie de photo";
         sectionAjout.style.display="none";
         sectionGalerie.style.display="block";
 
@@ -162,7 +169,7 @@ function prepareAJoutForm(liste){
     const categoriePhoto=document.getElementById("categorie-photo");
     const formAjout=document.getElementById("form-ajout");
     const errorMsgChargement=document.getElementById("error-message");
-    
+    const chargerPhoto=document.getElementById("charger-photo");
 
 
     //prévisualisation de l'image sur sélection
@@ -172,10 +179,12 @@ function prepareAJoutForm(liste){
             const url=URL.createObjectURL(fichier);
             previsuImg.src= url;
             previsuContainer.style.display="block";
+            chargerPhoto.style.display="none";
         }else{
             //si annulation de la selection de photos
             previsuContainer.style.display="none";
             previsuImg.src="";
+            chargerPhoto.style.display="block"
         }
     });
 
@@ -237,12 +246,14 @@ function prepareAJoutForm(liste){
             if (!requete.ok){
                 throw new Error(dataF.message || requete.status);
             }
+
             const galerie = document.querySelector(".galerie-modal");
             const fig = document.createElement("figure");
-            fig.classList.add(".modal-projet");
+            fig.classList.add("modal-projet");//".modal-projet"
             const img=document.createElement("img");
             img.src=dataF.imageUrl;
             img.alt=dataF.title;
+            img.setAttribute('data-id',dataF.id);
 
             const btnTrash=document.createElement("button");
             btnTrash.type="button";
@@ -253,6 +264,7 @@ function prepareAJoutForm(liste){
             fig.appendChild(btnTrash);
             galerie.appendChild(fig);
 
+            resetModalForm();
 
          
     }catch(err){
@@ -263,3 +275,27 @@ function prepareAJoutForm(liste){
 });
 
 }
+ 
+function resetModalForm(){
+   const chargerFichier=document.getElementById("charger-fichier");
+    const previsuContainer=document.getElementById("previsu_container");
+    const previsuImg=document.getElementById("previsu-img");
+    const titrePhoto=document.getElementById("titre-photo");
+    const categoriePhoto=document.getElementById("categorie-photo");
+    const chargerPhoto=document.getElementById("charger-photo");
+
+    chargerFichier.value='';
+    previsuContainer.style.display='none';
+    previsuImg.src='';
+    titrePhoto.value='';
+    categoriePhoto.value='';
+    chargerPhoto.style.display='block';
+}
+
+function suppImgAccueil(imageId) {
+    const mainGallery=document.querySelector(".gallery");
+    const imgToRemove=mainGallery.querySelector(`[data-id="${imageId}"]`);
+    if (imgToRemove){
+        imgToRemove.remove();
+    }
+};

@@ -1,4 +1,4 @@
-
+// ******FONCTION AFFICHAGE DE LA MODALE connexion/deconnexion
    
 document.addEventListener('DOMContentLoaded', () => {
     const topBar =document.getElementById("topBar")

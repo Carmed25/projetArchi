@@ -1,6 +1,6 @@
 
 
-//fonction qui permet de voir si on recupère correctement les données
+//fonction qui permet de voir si on recupère correctement les données nom et id
 export async function attendreFetch() {
    const reponse = await fetch("http://localhost:5678/api/works");
      if (!reponse.ok) 
@@ -11,3 +11,5 @@ export async function attendreFetch() {
     ///return reponse.json()
     //return listeProjets;
 }
+
+
