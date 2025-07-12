@@ -45,6 +45,8 @@ function afficherProjets(projets){
 
         img.src = projet.imageUrl;
         img.title = projet.title;
+        img.setAttribute('data-id',projet.id);
+        
         figcaption.textContent= projet.title;
           
         figure.appendChild(img);

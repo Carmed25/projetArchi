@@ -154,6 +154,7 @@ a , a:link{
 	text-align: center;
 	margin-bottom: 1em;
 }
+
 .gallery {
 	width: 100%;
 	display: grid;
@@ -164,19 +165,24 @@ a , a:link{
 
 .gallery img {
 	width: 100%;
+	height: 407px;
+	object-fit: cover;
 
 }
+
 #contact {
 	width: 50%;
 	margin: auto;
 }
+
 #contact > * {
 	text-align: center;
-
 }
+
 #contact h2{
 	margin-bottom: 20px;
 }
+
 #contact form {
 	text-align: left;
 	margin-top:30px;
@@ -488,6 +494,12 @@ button{
   position: relative;
   z-index: 2;
 }
+
+.green{
+	background-color: #1D6154;
+	color: white;
+}
+
 
 .modal label {
   font-size: 14px;

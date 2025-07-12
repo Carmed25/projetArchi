@@ -41,6 +41,7 @@ window.addEventListener("keydown",function(e){
     }
 });
 
+
 function closeModal (e){
     if (modal===null) return //si modal n'existe pas ou(!modal)
     e.preventDefault()
@@ -81,8 +82,10 @@ function afficherProjetsModal(listeProjetsModal){
     galerieModale.innerHTML="";
 
     listeProjetsModal.forEach(projet=>{
-       const figure = document.createElement ("figure");
-       figure.classList.add("modal-projet");
+        const figure = document.createElement ("figure");
+        figure.classList.add("modal-projet");
+        // ajout pour supp avec data id
+        figure.setAttribute('data-id',projet.id);
 
         const img = document.createElement ("img");
         img.src = projet.imageUrl;
@@ -99,28 +102,28 @@ function afficherProjetsModal(listeProjetsModal){
 
         btnTrash.addEventListener("click",async e=>{
             e.stopPropagation();
-          //supprimerProjet(projet.id,figure);
-          const id=figure.dataset.id;
-          const token=localStorage.getItem("authToken");
+            //supprimerProjet(projet.id,figure);
+            const id=figure.dataset.id;
+            const token=localStorage.getItem("authToken");
 
-          try{
-            const reponse=await fetch(`http://localhost:5678/api/works/${id}`,{
+            try{
+                const reponse=await fetch(`http://localhost:5678/api/works/${id}`,{
                 method:"DELETE",
                 headers:{Authorization:`Bearer ${token}`}
             }
-          );
-          console.log("status suppression:", reponse.status);
-          if (!reponse.ok) throw new Error('Erreur ${reponse.status}');
+            );
+                console.log("status suppression:", reponse.status);
+                if (!reponse.ok) 
+                    throw new Error('Erreur ${reponse.status}');
 
-          figure.remove(); //TODO enlever egalement image de page d'accueil
-          suppImgAccueil(id);
-       }catch (err){
-            console.error("echec de la suppression:",err);
-       };
-        
-    });
-
-})}
+                figure.remove(); //TODO enlever egalement image de page d'accueil
+                suppImgAccueil(id);
+            }catch (err){
+                console.error("echec de la suppression:",err);
+            };      
+        });
+    })
+}
 
 // Version page1/page 2 de la modale avec partie upload photo
 function changerVersionModale(liste){
@@ -141,7 +144,7 @@ function changerVersionModale(liste){
             //afficherCatModal()
             //remplirCatModal()
 
-});
+    });
 
     btnRetour.addEventListener("click", ()=>{
         titleModalV.textContent="Galerie de photo";
@@ -160,6 +163,8 @@ function changerVersionModale(liste){
     });
 }
 
+
+
 function prepareAJoutForm(liste){
     
     const chargerFichier=document.getElementById("charger-fichier");
@@ -170,11 +175,25 @@ function prepareAJoutForm(liste){
     const formAjout=document.getElementById("form-ajout");
     const errorMsgChargement=document.getElementById("error-message");
     const chargerPhoto=document.getElementById("charger-photo");
+    const btnSubmit=document.getElementById("submit");
 
+    function checkContenu(){
+        if (
+            previsuImg.src && titrePhoto.value.trim()!=="" && categoriePhoto.value!==""){
+                btnSubmit.disabled=false;
+                btnSubmit.classList.add('green');
+        }else{
+            btnSubmit.disabled=true;
+            btnSubmit.classList.remove('green');
+        }
+    }
 
     //prévisualisation de l'image sur sélection
     chargerFichier.addEventListener("change",()=>{
-    const fichier=chargerFichier.files[0];
+        const fichier=chargerFichier.files[0];
+        previsuContainer.style.display="none";
+        previsuImg.src="";
+        
         if(fichier){
             const url=URL.createObjectURL(fichier);
             previsuImg.src= url;
@@ -182,10 +201,11 @@ function prepareAJoutForm(liste){
             chargerPhoto.style.display="none";
         }else{
             //si annulation de la selection de photos
-            previsuContainer.style.display="none";
-            previsuImg.src="";
+           // previsuContainer.style.display="none";
+            //previsuImg.src="";
             chargerPhoto.style.display="block"
         }
+        checkContenu()
     });
 
 
@@ -212,13 +232,22 @@ function prepareAJoutForm(liste){
         categoriePhoto.appendChild(option);
     });
 
-   
+   titrePhoto.addEventListener("input",checkContenu);
+   categoriePhoto.addEventListener("change",checkContenu);
 
     //validation et envoi du formulaire
     
     formAjout.addEventListener('submit', async function(event){
         event.preventDefault();
         errorMsgChargement.style.display="none";
+
+        checkContenu();
+
+        if (btnSubmit.disabled){
+            errorMsgChargement.textContent="tous les champs doivent etre remplis";
+            errorMsgChargement.style.display="block";
+            return;
+        }
 
         if (!formAjout.checkValidity()){
             formAjout.reportValidity();
@@ -241,6 +270,7 @@ function prepareAJoutForm(liste){
                 headers: { Authorization: `Bearer ${token}`},
                 body: formulaireRempli
             });
+
             const dataF=await requete.json();
             console.log( "reponse de API:", dataF);
             if (!requete.ok){
@@ -264,20 +294,36 @@ function prepareAJoutForm(liste){
             fig.appendChild(btnTrash);
             galerie.appendChild(fig);
 
+                //ajout à la galerie page d'accueil :
+            const galerieAccueil=document.querySelector(".gallery");
+            const figAccueil=document.createElement("figure");
+            figAccueil.classList.add("img");
+            const imgAccueil=document.createElement("img");
+            imgAccueil.src=dataF.imageUrl;
+            imgAccueil.alt=dataF.title;
+            imgAccueil.setAttribute('data-id',dataF.id);
+
+            const figcaption=document.createElement("figcaption");
+            figcaption.textContent=dataF.title;
+
+            figAccueil.appendChild(imgAccueil);
+            figAccueil.appendChild(figcaption);
+            galerieAccueil.appendChild(figAccueil);
+
             resetModalForm();
 
          
-    }catch(err){
-    console.error("Echec envoi requete:", err);
-    errorMsgChargement.textContent = err.message || "erreur serveur";
-    errorMsgChargement.style.display="block";
-  }
-});
-
+        }catch(err){
+            console.error("Echec envoi requete:", err);
+            errorMsgChargement.textContent = err.message || "erreur serveur";
+            errorMsgChargement.style.display="block";
+        }
+    });
 }
  
+
 function resetModalForm(){
-   const chargerFichier=document.getElementById("charger-fichier");
+    const chargerFichier=document.getElementById("charger-fichier");
     const previsuContainer=document.getElementById("previsu_container");
     const previsuImg=document.getElementById("previsu-img");
     const titrePhoto=document.getElementById("titre-photo");
@@ -292,10 +338,19 @@ function resetModalForm(){
     chargerPhoto.style.display='block';
 }
 
+
+
 function suppImgAccueil(imageId) {
     const mainGallery=document.querySelector(".gallery");
     const imgToRemove=mainGallery.querySelector(`[data-id="${imageId}"]`);
-    if (imgToRemove){
-        imgToRemove.remove();
-    }
-};
+    if (imgToRemove){    
+        // Supprimer l'élément <figure> contenant l'image et le titre
+        const figureToRemove = imgToRemove.closest('figure');
+        if (figureToRemove) {
+            figureToRemove.remove(); // On supprime l'ensemble du <figure> (image + titre)
+        
+        } else {
+        console.log("Image avec l'ID", imageId, "non trouvée dans la page d'accueil");
+        }
+    };
+}
