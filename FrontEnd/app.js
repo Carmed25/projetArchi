@@ -3,7 +3,56 @@ import { attendreFetch} from "./data.js";
 //variable qui permet de savoir quelle modale sera ouverte
 let modal=null
 //creation fonction qui ouvre la modale et trouver l'element cible sur le lien
-const openModal=async function(e){
+
+document.addEventListener("DOMContentLoaded",async()=>{
+    document.querySelectorAll(".js-modal").forEach(a=>{
+    a.addEventListener("click",openModal)
+    });
+    window.addEventListener("keydown",function(e){
+    console.log(e.key) //pour voir nom de la touche
+    if(e.key ==="Escape"|| e.key ==="Esc"){
+        closeModal(e)
+    }
+    });
+
+    const liste=await attendreFetch();
+    prepareAJoutForm(liste);
+
+    const galerie=document.querySelector(".galerie-modal");
+    //if (!galerie) return;
+    galerie.addEventListener("click",async e=>{
+                const btnT=e.target.closest(".btn-trash");
+                if(!btnT) return;
+                e.stopPropagation();
+
+                const figure=btnT.closest("figure");
+            const id=figure.dataset.id;
+            const token=localStorage.getItem("authToken");
+
+            try{
+                const reponse=await fetch(`http://localhost:5678/api/works/${id}`,{
+                method:"DELETE",
+                headers:{Authorization:`Bearer ${token}`}
+            }
+            );
+                console.log("status suppression:", reponse.status);
+                if (!reponse.ok) 
+                    throw new Error(`Erreur ${reponse.status}`);
+
+                figure.remove(); //TODO enlever egalement image de page d'accueil
+                suppImgAccueil(id);
+            }catch (err){
+                console.error("echec de la suppression:",err);
+            };      
+    });
+ 
+
+
+   // const liste=await attendreFetch();
+    //prepareAJoutForm(liste);
+});
+
+async function openModal(e){
     e.preventDefault()
     //sur mon element je recupere attribut href soit #modal1
     // ou e.target.getAttribute("href")
@@ -30,17 +79,6 @@ const openModal=async function(e){
     await chargerModal();
 };
 
-document.querySelectorAll(".js-modal").forEach(a=>{
-    a.addEventListener("click",openModal)
-});
-
-window.addEventListener("keydown",function(e){
-    console.log(e.key) //pour voir nom de la touche
-    if(e.key ==="Escape"|| e.key ==="Esc"){
-        closeModal(e)
-    }
-});
-
 
 function closeModal (e){
     if (modal===null) return //si modal n'existe pas ou(!modal)
@@ -61,7 +99,6 @@ const stopPropagation = function(e){
 
 
 
-
 async function chargerModal() {
     try{
         const liste=await attendreFetch();
@@ -75,7 +112,6 @@ async function chargerModal() {
 } 
 
 
-
 //affichage des photos miniatures
 function afficherProjetsModal(listeProjetsModal){
     const galerieModale=document.querySelector(".galerie-modal");
@@ -86,11 +122,12 @@ function afficherProjetsModal(listeProjetsModal){
         figure.classList.add("modal-projet");
         // ajout pour supp avec data id
         figure.setAttribute('data-id',projet.id);
+        console.log("ajout modale figure id:",projet.id);
 
         const img = document.createElement ("img");
         img.src = projet.imageUrl;
         img.title = projet.title;
-        
+        //img.setAttribute('data-id',projet.id);
         const btnTrash=document.createElement("button");
         btnTrash.type="button";
         btnTrash.classList.add("btn-trash");
@@ -100,30 +137,14 @@ function afficherProjetsModal(listeProjetsModal){
         figure.appendChild(btnTrash);
         galerieModale.appendChild(figure);
 
-        btnTrash.addEventListener("click",async e=>{
-            e.stopPropagation();
-            //supprimerProjet(projet.id,figure);
-            const id=figure.dataset.id;
-            const token=localStorage.getItem("authToken");
-
-            try{
-                const reponse=await fetch(`http://localhost:5678/api/works/${id}`,{
-                method:"DELETE",
-                headers:{Authorization:`Bearer ${token}`}
-            }
-            );
-                console.log("status suppression:", reponse.status);
-                if (!reponse.ok) 
-                    throw new Error('Erreur ${reponse.status}');
-
-                figure.remove(); //TODO enlever egalement image de page d'accueil
-                suppImgAccueil(id);
-            }catch (err){
-                console.error("echec de la suppression:",err);
-            };      
-        });
-    })
+        //btnTrash.addEventListener("click",async e=>{
+           // e.stopPropagation();
+});
 }
+            //supprimerProjet(projet.id,figure);
+          
+   // })
+//}
 
 // Version page1/page 2 de la modale avec partie upload photo
 function changerVersionModale(liste){
@@ -140,7 +161,7 @@ function changerVersionModale(liste){
         sectionAjout.style.display="block";
         sectionGalerie.style.display="none";
         btnRetour.style.display="block";
-        prepareAJoutForm(liste);
+        //prepareAJoutForm(liste);
             //afficherCatModal()
             //remplirCatModal()
 
@@ -177,39 +198,8 @@ function prepareAJoutForm(liste){
     const chargerPhoto=document.getElementById("charger-photo");
     const btnSubmit=document.getElementById("submit");
 
-    function checkContenu(){
-        if (
-            previsuImg.src && titrePhoto.value.trim()!=="" && categoriePhoto.value!==""){
-                btnSubmit.disabled=false;
-                btnSubmit.classList.add('green');
-        }else{
-            btnSubmit.disabled=true;
-            btnSubmit.classList.remove('green');
-        }
-    }
 
-    //prévisualisation de l'image sur sélection
-    chargerFichier.addEventListener("change",()=>{
-        const fichier=chargerFichier.files[0];
-        previsuContainer.style.display="none";
-        previsuImg.src="";
-        
-        if(fichier){
-            const url=URL.createObjectURL(fichier);
-            previsuImg.src= url;
-            previsuContainer.style.display="block";
-            chargerPhoto.style.display="none";
-        }else{
-            //si annulation de la selection de photos
-           // previsuContainer.style.display="none";
-            //previsuImg.src="";
-            chargerPhoto.style.display="block"
-        }
-        checkContenu()
-    });
-
-
-    //Recuperation dynamique des catégories
+        //Recuperation dynamique des catégories
 
     const projetsIdCAt = liste.map(projet => [projet.categoryId , projet.category.name]);
     console.log("tableau tous les projets id/cat:",projetsIdCAt);
@@ -232,12 +222,47 @@ function prepareAJoutForm(liste){
         categoriePhoto.appendChild(option);
     });
 
-   titrePhoto.addEventListener("input",checkContenu);
-   categoriePhoto.addEventListener("change",checkContenu);
+    function checkContenu(){
+        if (
+            previsuImg.src && titrePhoto.value.trim()!=="" && categoriePhoto.value!==""){
+                btnSubmit.disabled=false;
+                btnSubmit.classList.add('green');
+                btnSubmit.classList.remove('btn-valider');
+        }else{
+            btnSubmit.disabled=true;
+            btnSubmit.classList.remove('green');
+            btnSubmit.classList.add('btn-valider');
+        }
+    }
 
-    //validation et envoi du formulaire
-    
+    //prévisualisation de l'image sur sélection et checkprevisu
+    //
+   
+    chargerFichier.addEventListener("change",()=>{
+    //function handleChargerFichier(){    
+        const fichier=chargerFichier.files[0];   
+        
+        if(fichier){
+            const url=URL.createObjectURL(fichier);
+            previsuImg.src= url;
+            previsuContainer.style.display="block";
+            chargerPhoto.style.display="none";
+        }else{
+            //si annulation de la selection de photos
+            previsuContainer.style.display="none";
+            previsuImg.src="";
+            chargerPhoto.style.display="block"
+        }
+        checkContenu();
+    })
+    ;
+
+    titrePhoto.addEventListener("input",checkContenu);
+    categoriePhoto.addEventListener("change",checkContenu);
+
+
     formAjout.addEventListener('submit', async function(event){
+    //async function handleSubmit(event){
         event.preventDefault();
         errorMsgChargement.style.display="none";
 
@@ -273,6 +298,7 @@ function prepareAJoutForm(liste){
 
             const dataF=await requete.json();
             console.log( "reponse de API:", dataF);
+    
             if (!requete.ok){
                 throw new Error(dataF.message || requete.status);
             }
@@ -284,7 +310,8 @@ function prepareAJoutForm(liste){
             img.src=dataF.imageUrl;
             img.alt=dataF.title;
             img.setAttribute('data-id',dataF.id);
-
+            fig.setAttribute('data-id',dataF.id);
+            console.log ("ajout modale figure id",dataF.id);
             const btnTrash=document.createElement("button");
             btnTrash.type="button";
             btnTrash.classList.add("btn-trash");
@@ -302,7 +329,7 @@ function prepareAJoutForm(liste){
             imgAccueil.src=dataF.imageUrl;
             imgAccueil.alt=dataF.title;
             imgAccueil.setAttribute('data-id',dataF.id);
-
+            figAccueil.setAttribute('data-id',dataF.id);
             const figcaption=document.createElement("figcaption");
             figcaption.textContent=dataF.title;
 
@@ -318,7 +345,9 @@ function prepareAJoutForm(liste){
             errorMsgChargement.textContent = err.message || "erreur serveur";
             errorMsgChargement.style.display="block";
         }
-    });
+    })
+    ;
+    
 }
  
 
@@ -339,18 +368,21 @@ function resetModalForm(){
 }
 
 
+   
+
 
 function suppImgAccueil(imageId) {
     const mainGallery=document.querySelector(".gallery");
-    const imgToRemove=mainGallery.querySelector(`[data-id="${imageId}"]`);
-    if (imgToRemove){    
-        // Supprimer l'élément <figure> contenant l'image et le titre
-        const figureToRemove = imgToRemove.closest('figure');
-        if (figureToRemove) {
+    const figureToRemove=mainGallery.querySelector(`figure[data-id="${imageId}"]`);
+    //imgToRemove au lieu de Fig
+    if (figureToRemove){    
+        ////Supprimer l'élément <figure> contenant l'image et le titre
+        //const figureToRemove = imgToRemove.closest('figure');
+        //if (figureToRemove) {
             figureToRemove.remove(); // On supprime l'ensemble du <figure> (image + titre)
         
         } else {
         console.log("Image avec l'ID", imageId, "non trouvée dans la page d'accueil");
         }
     };
-}
+//}

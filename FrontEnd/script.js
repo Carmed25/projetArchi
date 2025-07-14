@@ -45,8 +45,8 @@ function afficherProjets(projets){
 
         img.src = projet.imageUrl;
         img.title = projet.title;
-        img.setAttribute('data-id',projet.id);
-        
+        //img.setAttribute('data-id',projet.id);
+        figure.setAttribute('data-id',projet.id);
         figcaption.textContent= projet.title;
           
         figure.appendChild(img);
@@ -57,23 +57,7 @@ function afficherProjets(projets){
 }
 
 //fonction qui récupère et affiche les travaux filtrés
-//async function chargerProjets(){
 
-
-
-
-//async function chargerProjets(){
-    //try {
-      //  const listeProjets = await attendreFetch()
-        //afficherProjets(listeProjets);
-        //genererFiltres(listeProjets)
-    //} catch (error) {
-      //  console.log("Erreur chargement des projets :"+ error.message);
-    ///}
-//}
-///chargerProjets();
-//document.addEventListener("DOMContentLoaded",chargerProjets);
-//fonction qui permet de voir si on recupère correctement les données
 
 
 // Partie Filtre 
@@ -94,7 +78,7 @@ async function genererFiltres(listeProjets) {
     console.log("liste des catégories triées avec id :",categoriesIdNom);
 
 
-    //générer dynamiquement les boutons via javaS selon leur nom de categorie
+    //générer dynamiquement les boutons par nom categorie
     //creation des boutons
     const menuFiltre = document.querySelector(".menu-filtres");
     menuFiltre.innerHTML="";
