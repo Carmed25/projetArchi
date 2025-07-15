@@ -449,6 +449,7 @@ button{
 #previsu_container {
   height: 169px;
 }
+
 #previsu-img {
   object-fit: contain;
   width: 100%;
