@@ -55,22 +55,27 @@ document.addEventListener("DOMContentLoaded",async()=>{
 async function openModal(e){
     e.preventDefault()
     //sur mon element je recupere attribut href soit #modal1
-    // ou e.target.getAttribute("href")
     const target=document.querySelector(e.target.getAttribute("href"))
     if(!target)return console.error("modal cible non trouvée")
-    //peut mettre erreur pr voir si on recupere la cible
-    //décache la boite modale
-    //*****affiche la modale */
+    // vérifie si la modale est deja ouverte, si oui ne rien faire
+    if (modal === target){
+        console.log ("la modale est déjà ouverte");
+        return;
+    }
+    // si une autre modale est ouverte, la fermer
+    if (modal !==null){
+        closeModal(); //pour fermer l'autre modale si presente
+    }
+    //réinitialise le contenu de la modale:
+    resetModalForm();
+    //décache/affiche la boite modale:
     target.style.display=null;
-    //target.setAttribute("aria-hidden",false)
-    //ou 
     target.removeAttribute("aria-hidden")
     target.setAttribute("aria-modal","true")
     //permet de savoir la modale ciblée qui est ouverte
-    ///chargerProjetsModal()
-    modal=target
+    modal=target;
 
-    //quand click sur cette modale, fermeture
+    //pour fermeture => ajout des ecouteurs
     modal.addEventListener("click", closeModal)
     modal.querySelector(".js-closeModal").addEventListener("click",closeModal)
     modal.querySelector(".js-stopModal").addEventListener("click",stopPropagation)
@@ -81,15 +86,19 @@ async function openModal(e){
 
 
 function closeModal (e){
-    if (modal===null) return //si modal n'existe pas ou(!modal)
+    if (modal === null) return ;//si modal n'existe pas ou(!modal), ne rien faire
     e.preventDefault()
+    //masque la modale
     modal.style.display ="none";
     modal.setAttribute("aria-hidden", "true")
     modal.removeAttribute("aria-modal")
-    //enleve le listener
+    //reinitialise la modale previsu:
+    resetModalForm();
+    //enleve les listener
     modal.removeEventListener("click", closeModal)
     modal.querySelector(".js-closeModal").removeEventListener("click",closeModal)
     modal.querySelector(".js-stopModal").removeEventListener("click",stopPropagation)
+    //reinitialise la variable modal
     modal= null
 };
 
@@ -156,22 +165,20 @@ function changerVersionModale(liste){
     const btnRetour=modalVersion.querySelector(".btn-retour");
     const btnValider=modalVersion.querySelector(".btn-valider");
 
+    //bouton pour passer à V2 "prévisu-ajouter une photo"
     btnModal.addEventListener("click",()=>{
         titleModalV.textContent="Ajouter une photo";
         sectionAjout.style.display="block";
         sectionGalerie.style.display="none";
-        btnRetour.style.display="block";
-        //prepareAJoutForm(liste);
-            //afficherCatModal()
-            //remplirCatModal()
-
+        btnRetour.style.display="block"; // ajout du btn retour
     });
-
+    //bouton pour passer à V1 "galerie de photos"
     btnRetour.addEventListener("click", ()=>{
         titleModalV.textContent="Galerie de photo";
         sectionAjout.style.display="none";
         sectionGalerie.style.display="block";
-        btnRetour.style.display="none";
+        btnRetour.style.display="none"; // cache bouton retour quand retourne galerie
+        resetModalForm();
     });
 
 
@@ -180,6 +187,7 @@ function changerVersionModale(liste){
         titleModalV.textContent="Galerie de photo";
         sectionAjout.style.display="none";
         sectionGalerie.style.display="block";
+        btnRetour.style.display="none";
 
     });
 }
@@ -211,7 +219,7 @@ function prepareAJoutForm(liste){
     console.log("liste des catégories triées avec id :",categoriesIdNom);
 
 
-    // Remplissage dynamique des categories
+        // Remplissage dynamique des categories
 
     categoriePhoto.innerHTML=`<option value=""></option>`;
 
@@ -221,6 +229,7 @@ function prepareAJoutForm(liste){
         option.textContent=c.name;
         categoriePhoto.appendChild(option);
     });
+
 
     function checkContenu(){
         if (
@@ -254,12 +263,10 @@ function prepareAJoutForm(liste){
             chargerPhoto.style.display="block"
         }
         checkContenu();
-    })
-    ;
+    });
 
     titrePhoto.addEventListener("input",checkContenu);
     categoriePhoto.addEventListener("change",checkContenu);
-
 
     formAjout.addEventListener('submit', async function(event){
     //async function handleSubmit(event){
@@ -345,9 +352,7 @@ function prepareAJoutForm(liste){
             errorMsgChargement.textContent = err.message || "erreur serveur";
             errorMsgChargement.style.display="block";
         }
-    })
-    ;
-    
+    }); 
 }
  
 
@@ -364,11 +369,14 @@ function resetModalForm(){
     previsuImg.src='';
     titrePhoto.value='';
     categoriePhoto.value='';
-    chargerPhoto.style.display='block';
+    chargerPhoto.style.display='flex';
+
+    const btnSubmit=document.getElementById("submit");
+    btnSubmit.disabled=true;
+    btnSubmit.classList.remove('green');
+    btnSubmit.classList.add('btn-valider');
 }
 
-
-   
 
 
 function suppImgAccueil(imageId) {
@@ -384,5 +392,5 @@ function suppImgAccueil(imageId) {
         } else {
         console.log("Image avec l'ID", imageId, "non trouvée dans la page d'accueil");
         }
-    };
+};
 //}
