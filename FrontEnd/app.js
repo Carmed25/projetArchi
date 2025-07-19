@@ -68,6 +68,16 @@ async function openModal(e){
     }
     //réinitialise le contenu de la modale:
     resetModalForm();
+
+    //--réinitialise à V1 --V2 et btnRetour sont cachés
+    const sectionGalerie=target.querySelector("#section-galerie");
+    const sectionAjout = target.querySelector("#section-ajout");
+    const btnRetour= target.querySelector(".btn-retour");
+
+    sectionAjout.style.display="none";
+    sectionGalerie.style.display="block";
+    btnRetour.style.display="none";
+
     //décache/affiche la boite modale:
     target.style.display=null;
     target.removeAttribute("aria-hidden")
@@ -232,8 +242,8 @@ function prepareAJoutForm(liste){
 
 
     function checkContenu(){
-        if (
-            previsuImg.src && titrePhoto.value.trim()!=="" && categoriePhoto.value!==""){
+        if (//previsuImg.src &&
+            chargerFichier.files.length > 0 && titrePhoto.value.trim()!=="" && categoriePhoto.value!==""){
                 btnSubmit.disabled=false;
                 btnSubmit.classList.add('green');
                 btnSubmit.classList.remove('btn-valider');

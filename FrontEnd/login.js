@@ -8,6 +8,14 @@ const loginMsg=document.getElementById("login-message")
 formulaireLogin.addEventListener('submit', async function(event){
     event.preventDefault();
     console.log('formulaire soumis');
+
+    //validation email avant envoi
+    const emailRegex=/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    if (!emailRegex.test(emailC.value)){
+        loginMsg.textContent="Veuillez saisir une adresse email valide."
+        return;
+    }
+    console.log ("formulaire soumis");
    
     const chargeUtile={
         "email": emailC.value,
@@ -41,11 +49,13 @@ formulaireLogin.addEventListener('submit', async function(event){
       // Affichage de l’erreur
             console.log('erreur de connexion:',data.message)
             loginMsg.textContent = data.message || 'Identifiants incorrects';
+            loginMsg.style.color="red";
        
     }
 }catch (error) {
     console.error("Erreur:", error);
     loginMsg.textContent = "Une erreur s'est produite.Réessayer plus tard.";
+    loginMsg.style.color="red";
   }
 }
 )

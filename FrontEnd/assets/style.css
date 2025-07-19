@@ -51,12 +51,18 @@ table {
 	background-color: white;
 }*/
 body {
-	/**max-width: 1140px;*/
+
 	margin:auto;
 	font-family: 'Work Sans' ;
 	font-size: 14px;
 	background-color:#FFFEF8
 }
+
+.page-centrale{
+	max-width: 1140px;
+	margin: auto;
+}
+
 header {
 	display: flex;
 	justify-content: space-between;
@@ -127,6 +133,10 @@ a , a:link{
 	color:inherit;
 }
 
+main{
+	margin: 10em 6.8em 0 6.8em;
+}
+
 #introduction {
 	display: flex;
 	align-items: center;
@@ -137,12 +147,16 @@ a , a:link{
 #introduction img {
 	display: block;
 	margin: auto;
-	width: 80%;
+	/*width: 80%;*/
+	width: 474px;
+	height: 355px;
 }
 
 #introduction article {
-	flex: 1
+	flex: 1;
+	margin-left: 50px;
 }
+
 #introduction h2 {
 	margin-bottom: 1em;
 }
@@ -150,6 +164,11 @@ a , a:link{
 #introduction p {
 	margin-bottom: 0.5em;
 }
+
+#portfolio {
+	margin-top: 10em;
+}
+
 #portfolio h2 {
 	text-align: center;
 	margin-bottom: 1em;
@@ -159,20 +178,28 @@ a , a:link{
 	width: 100%;
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr;
-	grid-column-gap: 20px;
+	/*grid-column-gap: 20px;*/
 	grid-row-gap: 20px;
 }
 
 .gallery img {
-	width: 100%;
+	/*width: 100%;*/
+	width: 305px;
 	height: 407px;
 	object-fit: cover;
 
 }
 
+figcaption{
+	margin-top: 0.5em;
+	font-size: 13px;
+}
+
 #contact {
 	width: 50%;
 	margin: auto;
+	margin-top: 4em;
+	max-width: 379px;
 }
 
 #contact > * {
@@ -185,7 +212,6 @@ a , a:link{
 
 #contact form {
 	text-align: left;
-	margin-top:30px;
 	display: flex;
 	flex-direction: column;
 }
@@ -213,11 +239,13 @@ input[type="submit"]{
 	width: 180px;
 	text-align: center;
 	border-radius: 60px ;
+	height: 36px !important;
 }
 
 footer{
 	background-color: #FFFFFF;
-	margin-top: 50px;
+	margin-top: 60px;
+	height: 60px;
 }
 
 footer nav ul {
@@ -247,6 +275,11 @@ button{
 	background-color: white;
 }
 
+.btn-filter:hover{
+	color:white;
+	background-color: #1D6154;
+}
+
 .btn-filter.active{
 	color:white;
 	background-color: #1D6154;
@@ -259,7 +292,7 @@ button{
 	width:585px;
 	gap:10px;
 	justify-content: center;
-	margin : 2em auto ;
+	margin : 3.5em auto ;
 	
 }
 
@@ -268,13 +301,17 @@ button{
 #loginPage{
 	max-height: 1024px;
 }
-#loginPage a{
+li a{
+	text-decoration: none;
+}
+#contact a{
 	text-decoration: underline;
 }
 
 #login-message{
 	color:red;
 	font-weight: bold;
+	font-size: 18px;
 }
 
 /** Mode connexion***/
