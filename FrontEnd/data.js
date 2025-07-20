@@ -6,10 +6,6 @@ export async function attendreFetch() {
      if (!reponse.ok) 
       throw new Error(reponse.status);
     return reponse.json()
-    ///listeProjets = await reponse.json();
-    ///console.log ("données recues:", listeProjets);
-    ///return reponse.json()
-    //return listeProjets;
 }
 
 

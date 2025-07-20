@@ -2,6 +2,7 @@ import { attendreFetch} from "./data.js";
 
 //variable qui permet de savoir quelle modale sera ouverte
 let modal=null
+
 //creation fonction qui ouvre la modale et trouver l'element cible sur le lien
 
 document.addEventListener("DOMContentLoaded",async()=>{
@@ -21,35 +22,30 @@ document.addEventListener("DOMContentLoaded",async()=>{
     const galerie=document.querySelector(".galerie-modal");
     //if (!galerie) return;
     galerie.addEventListener("click",async e=>{
-                const btnT=e.target.closest(".btn-trash");
-                if(!btnT) return;
-                e.stopPropagation();
+        const btnT=e.target.closest(".btn-trash");
+        if(!btnT) return;
+        e.stopPropagation();
 
-                const figure=btnT.closest("figure");
-            const id=figure.dataset.id;
-            const token=localStorage.getItem("authToken");
+        const figure=btnT.closest("figure");
+        const id=figure.dataset.id;
+        const token=localStorage.getItem("authToken");
 
-            try{
-                const reponse=await fetch(`http://localhost:5678/api/works/${id}`,{
-                method:"DELETE",
-                headers:{Authorization:`Bearer ${token}`}
+        try{
+            const reponse=await fetch(`http://localhost:5678/api/works/${id}`,{
+            method:"DELETE",
+            headers:{Authorization:`Bearer ${token}`}
             }
             );
-                console.log("status suppression:", reponse.status);
-                if (!reponse.ok) 
-                    throw new Error(`Erreur ${reponse.status}`);
+            console.log("status suppression:", reponse.status);
+            if (!reponse.ok) 
+                throw new Error(`Erreur ${reponse.status}`);
 
-                figure.remove(); //TODO enlever egalement image de page d'accueil
-                suppImgAccueil(id);
-            }catch (err){
-                console.error("echec de la suppression:",err);
+            figure.remove(); //enleve image mini et image de page d'accueil
+            suppImgAccueil(id);
+        }catch (err){
+            console.error("echec de la suppression:",err);
             };      
     });
- 
-
-
-   // const liste=await attendreFetch();
-    //prepareAJoutForm(liste);
 });
 
 async function openModal(e){
@@ -124,7 +120,6 @@ async function chargerModal() {
         afficherProjetsModal(liste); // affichage des miniatures avec btn-trash et DELETE si clic
         changerVersionModale(liste); // affichage boite previsu et fonction prepareForm pour envoi formulaire
        
-        //remplirCatModal(liste);
     }catch(error){
         console.error("erreur modale fetch",error);
     }  
@@ -155,15 +150,8 @@ function afficherProjetsModal(listeProjetsModal){
         figure.appendChild(img);
         figure.appendChild(btnTrash);
         galerieModale.appendChild(figure);
-
-        //btnTrash.addEventListener("click",async e=>{
-           // e.stopPropagation();
 });
 }
-            //supprimerProjet(projet.id,figure);
-          
-   // })
-//}
 
 // Version page1/page 2 de la modale avec partie upload photo
 function changerVersionModale(liste){
@@ -182,6 +170,7 @@ function changerVersionModale(liste){
         sectionGalerie.style.display="none";
         btnRetour.style.display="block"; // ajout du btn retour
     });
+
     //bouton pour passer à V1 "galerie de photos"
     btnRetour.addEventListener("click", ()=>{
         titleModalV.textContent="Galerie de photo";
@@ -190,7 +179,6 @@ function changerVersionModale(liste){
         btnRetour.style.display="none"; // cache bouton retour quand retourne galerie
         resetModalForm();
     });
-
 
     btnValider.addEventListener("click",()=>{
     //traitement des données et formulaire
@@ -255,10 +243,9 @@ function prepareAJoutForm(liste){
     }
 
     //prévisualisation de l'image sur sélection et checkprevisu
-    //
    
     chargerFichier.addEventListener("change",()=>{
-    //function handleChargerFichier(){    
+   
         const fichier=chargerFichier.files[0];   
         
         if(fichier){
@@ -279,7 +266,6 @@ function prepareAJoutForm(liste){
     categoriePhoto.addEventListener("change",checkContenu);
 
     formAjout.addEventListener('submit', async function(event){
-    //async function handleSubmit(event){
         event.preventDefault();
         errorMsgChargement.style.display="none";
 
@@ -322,13 +308,15 @@ function prepareAJoutForm(liste){
 
             const galerie = document.querySelector(".galerie-modal");
             const fig = document.createElement("figure");
-            fig.classList.add("modal-projet");//".modal-projet"
             const img=document.createElement("img");
+            
+            fig.classList.add("modal-projet");//".modal-projet"
             img.src=dataF.imageUrl;
             img.alt=dataF.title;
             img.setAttribute('data-id',dataF.id);
             fig.setAttribute('data-id',dataF.id);
             console.log ("ajout modale figure id",dataF.id);
+            
             const btnTrash=document.createElement("button");
             btnTrash.type="button";
             btnTrash.classList.add("btn-trash");
@@ -355,7 +343,6 @@ function prepareAJoutForm(liste){
             galerieAccueil.appendChild(figAccueil);
 
             resetModalForm();
-
          
         }catch(err){
             console.error("Echec envoi requete:", err);
@@ -392,15 +379,9 @@ function resetModalForm(){
 function suppImgAccueil(imageId) {
     const mainGallery=document.querySelector(".gallery");
     const figureToRemove=mainGallery.querySelector(`figure[data-id="${imageId}"]`);
-    //imgToRemove au lieu de Fig
     if (figureToRemove){    
-        ////Supprimer l'élément <figure> contenant l'image et le titre
-        //const figureToRemove = imgToRemove.closest('figure');
-        //if (figureToRemove) {
             figureToRemove.remove(); // On supprime l'ensemble du <figure> (image + titre)
-        
         } else {
         console.log("Image avec l'ID", imageId, "non trouvée dans la page d'accueil");
         }
 };
-//}

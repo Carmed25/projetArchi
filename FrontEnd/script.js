@@ -1,10 +1,6 @@
-//import { attendreFetch } from "./data.js";
-//let listeProjets=[]
-//console.log ("je recupere ma liste projet",listeProjets )
+
 console.log("script chargé")
-
 const galerie = document.querySelector(".gallery");
-
 
 
 //fonction qui permet de voir si on recupère correctement les données
@@ -14,22 +10,18 @@ async function attendreFetch() {
        throw new Error(reponse.status);
     const data = await reponse.json();
     console.log ("données recues:", data);
-    ///return reponse.json()
     return data;
 }
-//const listeProjets=await attendreFetch()
-//console.log ("test des donnees pour transfer",listeProjets)
 
 document.addEventListener("DOMContentLoaded", async()=>{
 try {
         const listeProjets = await attendreFetch()
         afficherProjets(listeProjets);
         genererFiltres(listeProjets)
-    } catch (error) {
+} catch (error) {
         console.log("Erreur chargement des projets :"+ error.message);
     }
 })
-
 
 
 
@@ -52,19 +44,12 @@ function afficherProjets(projets){
         figure.appendChild(img);
         figure.appendChild(figcaption);
         galerie.appendChild(figure);
-
     })
 }
 
-//fonction qui récupère et affiche les travaux filtrés
 
-
-
-// Partie Filtre 
-
-//const listeProjets = await attendreFetch();
   
-    // fonction de recupération de toutes les categoriesId
+// fonction de recupération de toutes les categoriesId
 async function genererFiltres(listeProjets) {
     
         //obtient tableau de nomcategorie/id de tous les projets
@@ -79,14 +64,15 @@ async function genererFiltres(listeProjets) {
 
 
     //générer dynamiquement les boutons par nom categorie
+
     //creation des boutons
     const menuFiltre = document.querySelector(".menu-filtres");
     menuFiltre.innerHTML="";
     //bouton TOUS
     const btnTous = document.createElement ("button");
-    btnTous.textContent= "Tous";
-    btnTous.dataset.cat =0;
-    btnTous.classList.add("btn-filter");
+        btnTous.textContent= "Tous";
+        btnTous.dataset.cat =0;
+        btnTous.classList.add("btn-filter");
     menuFiltre.appendChild(btnTous);
     //autres Boutons
     categoriesIdNom.forEach(categorie=>{
@@ -94,8 +80,9 @@ async function genererFiltres(listeProjets) {
             btn.textContent=categorie.name;
             btn.dataset.cat = categorie.id;
             btn.classList.add("btn-filter");
-            menuFiltre.appendChild(btn);
+        menuFiltre.appendChild(btn);
     });
+    
     //tri des travaux selon leur id
     menuFiltre.querySelectorAll(".btn-filter").forEach(btn=>{
         btn.addEventListener("click",()=>{

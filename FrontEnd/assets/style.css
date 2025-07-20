@@ -51,7 +51,6 @@ table {
 	background-color: white;
 }*/
 body {
-
 	margin:auto;
 	font-family: 'Work Sans' ;
 	font-size: 14px;
@@ -68,6 +67,7 @@ header {
 	justify-content: space-between;
 	margin: 50px 0
 }
+
 section {
 	margin: 50px 0
 }
@@ -123,7 +123,6 @@ nav li {
 	height: 22px;
 }
 
-
 li:hover {
 	color: #B1663C;
 }
@@ -151,16 +150,13 @@ main{
 	width: 474px;
 	height: 355px;
 }
-
 #introduction article {
 	flex: 1;
 	margin-left: 50px;
 }
-
 #introduction h2 {
 	margin-bottom: 1em;
 }
-
 #introduction p {
 	margin-bottom: 0.5em;
 }
@@ -183,11 +179,9 @@ main{
 }
 
 .gallery img {
-	/*width: 100%;*/
 	width: 305px;
 	height: 407px;
 	object-fit: cover;
-
 }
 
 figcaption{
@@ -258,7 +252,6 @@ footer nav ul {
 }
 
 button{
-	
 	width: auto;
 	text-align: center;
 	border-radius: 60px ;
@@ -293,7 +286,6 @@ button{
 	gap:10px;
 	justify-content: center;
 	margin : 3.5em auto ;
-	
 }
 
 /***** Page Login*****/
@@ -318,8 +310,6 @@ li a{
 .hide{
 	display : none
 }
-
-
 .topBar{
 	background-color: black;
 	/*height: 59px;*/
@@ -328,7 +318,6 @@ li a{
 	align-items: center;
 	font-size: 16px;
 	padding:1em;
-
 }
 .logoConnexion{
 	color: #fff8f8;
@@ -427,14 +416,12 @@ li a{
 	display: inline-flex;
 	justify-content: center;
 	align-items: center;
-
 }
 .btn-trash i{
 	color:white;
 	font-size: 0.8em;
 	line-height: 1;
 }
-
 
 .btnModal{
 	font-family: 'Syne';
@@ -448,10 +435,7 @@ li a{
 	border: none;
 	font-size: 14px;
 	display: block; /**pour que margin fonctionne*/
-
 }
-
-
 
 .ligneGrise{
 	border: none;
@@ -534,7 +518,6 @@ li a{
   color: #306685;
   font-size: 14px;
   font-weight: 500;
-  /*! font-style: ; */
   border: none;
   margin: 1em auto;
   position: relative;
@@ -568,7 +551,6 @@ li a{
 	font-size: 14px;
 	display: block; /**pour que margin fonctionne*/
 }
-
 
 .modal label {
   font-size: 14px;
