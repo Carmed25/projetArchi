@@ -3,7 +3,7 @@ import { attendreFetch} from "./data.js";
 //variable qui permet de savoir quelle modale sera ouverte
 let modal=null
 
-//creation fonction qui ouvre la modale et trouver l'element cible sur le lien
+//creation fonction qui ouvre la modale et trouver element cible sur le lien
 
 document.addEventListener("DOMContentLoaded",async()=>{
     document.querySelectorAll(".js-modal").forEach(a=>{
